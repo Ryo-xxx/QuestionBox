@@ -1,0 +1,380 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: auto;
+}
+
+#content {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    overflow: auto;
+    box-sizing: border-box;
+}
+
+body {
+    transform-origin: top left;
+    transform: scale(1);
+    font-family: 'Noto Sans JP', serif;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: #a2c2d0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.item {
+    flex: 1 1 300px; /* 各アイテムは最大300pxの幅を持つ */
+    padding: 10px;
+}
+
+img {
+    max-width: 100%; /* 親要素の幅に合わせて画像を縮小 */
+    height: auto; /* 高さを自動調整 */
+}
+
+button, a {
+    touch-action: manipulation; /* タッチ操作時の挙動を最適化 */
+}
+
+#textList {
+    position: fixed; /* 画面に固定 */
+    bottom: 38px; /* 画面の中央に配置 */
+    left: 800px; /* 水平方向の位置を調整 */
+    max-width: 650px;
+    width: 100%;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+    z-index: 1;
+    scrollbar-width: thin; /* Firefox用 */
+    scrollbar-color: rgba(255, 255, 255, 0.205) rgba(255, 255, 255, 0); /* Firefox用 */
+    transition: opacity 0.3s ease-in-out; /* スクロールバーのフェードイン・フェードアウト */
+}
+
+/* Chrome, Edge, Safari 用 */
+#textList::-webkit-scrollbar {
+    width: 8px; /* スクロールバーの幅 */
+    height: 8px; /* 横スクロールバーの高さ */
+}
+
+#textList::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.205); /* スクロールバーの色 */
+    border-radius: 10px; /* 角を丸く */
+    border: 2px solid rgba(0, 0, 0, 0); /* 外枠の透明化 */
+}
+
+#textList::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0); /* スクロールバーの背景色 */
+}
+
+#textList::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5); /* ホバー時に明るく */
+}
+
+#textList::-webkit-scrollbar-track:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* トラックホバー時 */
+}
+
+@media (max-width: 768px) {
+    #textList {
+        left: 50px; /* 小さい画面では適切な位置に調整 */
+        max-width: 90%; /* 幅を制限 */
+    }
+}
+
+.text-item {
+    cursor: pointer;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-right: 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    color: rgb(24, 24, 24);
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* 下に隙間を作る */
+}
+
+.text-item:not(:last-child) {
+    margin-bottom: 10px; /* 最後のアイテム以外に10pxの隙間を追加 */
+}
+
+.text-item .number {
+    padding-left: 10px;
+    padding-right: 15px;
+    font-weight: bold;
+}
+
+.text-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit; /* 親要素の色を引き継ぐ */
+    padding: 2px 5px;
+    display: inline-block;
+    transition: filter 0.3s ease; /* フィルターの遷移 */
+}
+
+.text-link:hover {
+    background-color: #7be4bc; /* ホバー時 */
+}
+
+.text-item:hover {
+    background-color: #7be4bc;
+}
+
+.text-item:nth-child(even) {
+    background-color: #ffffff; /* 偶数番目の項目に白背景 */
+}
+
+.text-item:nth-child(odd) {
+    background-color: #F1F0FF; /* 奇数番目の項目に別背景 */
+}
+
+.text-item.highlight {
+    background-color: #ffe6f1; /* ハイライトされた項目はピンク */
+}
+
+#overlayText {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 1.2s ease, visibility 0s linear 1.2s; /* フェードイン効果 */
+    font-size: 12px;
+    color: #161616;
+    text-align: left;
+    background: rgba(109, 109, 109, 0);
+    width: 590px;
+    max-height: 255px;
+    padding: 10px 5px 10px 15px;
+    overflow: hidden;
+    border-radius: 5px;
+    visibility: hidden;
+    opacity: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    z-index: 3;
+}
+
+#overlayText .fade {
+    transition: opacity 0.45s ease-in-out; /* フェードイン/フェードアウト効果 */
+    opacity: 0;
+    visibility: hidden;
+}
+
+#overlayText .fade.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#imageContainer {
+    position: fixed;
+    top: 340px;
+    left: 30px;
+    width: 670px;
+    height: 399px;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#imageContainer img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.rectangle {
+    position: relative;
+    background-color: #161616;
+    border: 2px solid #ffffff;
+    width: 670px;
+    height: 130px;
+    left: 30px;
+    top: -219px;
+    box-sizing: border-box;
+    z-index: 0;
+}
+
+#fontSelect {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    z-index: 3;
+    background-color: #161616;
+    border: 2px solid #ffffff;
+    padding: 7px 70px 9px 30px;
+    color: white;
+    cursor: pointer;
+}
+
+#loadFileBtn {
+    position: absolute;
+    top: 30px;
+    left: 397px;
+    background-color: #161616;
+    color: white;
+    padding: 11px 60px 9px 60px;
+    border: 2px solid #ffffff;
+    z-index: 3;
+}
+
+#fontSizeControl {
+    position: absolute;
+    top: 80px;
+    left: 30px;
+    background-color: #16161600;
+    border: 2px solid #ffffff00;
+    border-bottom: none;
+    border-right: none;
+    padding: 10px 5px 5px 30px;
+    z-index: 2;
+}
+
+#fontSizeControl label {
+    padding-right: 1px;
+}
+
+.flipped-emoji {
+    display: inline-block;
+    transform: scaleX(-1) rotate(-60deg);
+    transition: transform 0.1s ease-in-out;
+}
+
+#nextprevControl {
+    position: absolute;
+    top: 80px;
+    left: calc(460px + 25px - 4px);
+    z-index: 3;
+    background-color: #16161600;
+    border: 2px solid #ffffff00;
+    border-bottom: none;
+    border-left: none;
+    padding: 12px 10px 10px 10px;
+}
+
+#colorControl {
+    position: absolute;
+    top: 130px;
+    left: 30px;
+    z-index: 3;
+    background-color: #16161600;
+    border: 2px solid #ffffff00;
+    border-top: none;
+    padding: 10px 10px 10px 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#colorControl button {
+    padding: 19px;
+    cursor: pointer;
+    border: 1px solid #66E0FF;
+    background-color: #161616;
+    color: #ffffff;
+}
+
+#colorControl input[type="color"] {
+    width: 40px;
+    height: 40px;
+}
+
+.font-button {
+    padding: 8px 28px 8px 27px;
+    cursor: pointer;
+    border: 1px solid #66E0FF;
+    background-color: #161616;
+    color: #FFFFFF;
+    border-radius: 1px;
+}
+
+.clock-container-clock {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    height: auto;
+}
+
+.clock-date {
+    display: block;
+    padding: 266px 0 0 105px;
+    font-size: 24px;
+    font-family: 'Digital Numbers', sans-serif;
+    color: var(--clock-color, #FFFFFF);
+    text-shadow:
+        0 0 4px var(--shadow-color, rgba(0, 0, 0, 0.3)),
+        0 0 12px var(--glow-color, rgba(255, 255, 255, 0.8));
+    letter-spacing: -4px;
+}
+
+.day {
+    letter-spacing: 2px;
+}
+
+.date {
+    letter-spacing: -2px;
+}
+
+.clock-base {
+    font-size: 45px;
+    font-family: 'Digital Numbers', sans-serif;
+    color: rgb(0, 0, 0, 0.12);
+    position: absolute;
+    top: 240px;
+    left: 362px;
+    z-index: 1;
+    letter-spacing: -3px;
+}
+
+.clock {
+    font-size: 45px;
+    font-family: 'Digital Numbers', sans-serif;
+    color: var(--clock-color, #FFFFFF);
+    position: absolute;
+    top: 240px;
+    left: 362px;
+    z-index: 2;
+    letter-spacing: -3px;
+    text-shadow:
+        0 0 4px var(--shadow-color, rgba(0, 0, 0, 0.2)),
+        0 0 5px var(--glow-color, rgba(255, 255, 255, 0.8)),
+        0 0 14px var(--glow-color, rgba(255, 255, 255, 0.8));
+    animation: glow 2.0s infinite alternate;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow:
+            0 0 4px var(--shadow-color, rgba(124, 124, 124, 0.432)),
+            0 0 6px var(--glow-color, rgba(255, 255, 255, 0.1));
+    }
+    100% {
+        text-shadow:
+            0 0 4px var(--shadow-color, rgba(124, 124, 124, 0.432)),
+            0 0 16px var(--glow-color, rgba(255, 255, 255, 1));
+    }
+}
+
+@media (max-width: 768px) {
+    .clock {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 30px;
+    }
+}
